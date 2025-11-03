@@ -33,10 +33,38 @@ pipeline {
             }
         }
 
+        stage('Coverage') {
+            steps {
+                script {
+                    bat """
+                        call ${VIRTUAL_ENV}\\Scripts\\activate
+                        coverage run -m pytest
+                        coverage report -m
+                    """
+                }
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                script {
+                    bat """
+                        call ${VIRTUAL_ENV}\\Scripts\\activate
+                        bandit -r .
+                    """
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 script {
-                    echo "Deploying application..."
+                    bat """
+                        echo Deploying application...
+                        if not exist deploy mkdir deploy
+                        copy app.py deploy\\app.py /Y
+                        echo Application deployed to the 'deploy' folder.
+                    """
                 }
             }
         }
