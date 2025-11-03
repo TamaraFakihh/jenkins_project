@@ -50,7 +50,8 @@ pipeline {
                 script {
                     bat """
                         call ${VIRTUAL_ENV}\\Scripts\\activate
-                        bandit -r .
+                        bandit -r . -f json -o bandit_report.json
+                        type bandit_report.json
                     """
                 }
             }
